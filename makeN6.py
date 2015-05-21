@@ -38,4 +38,25 @@ def make_random_oligo(N):
 
 if __name__ == '__main__':
 
-    test = make_random_oligo(6)
+    N6_orig = make_random_oligo(6)
+
+    from Bio.Seq import Seq
+    from Bio.Alphabet import IUPAC
+    from Bio import SeqIO
+    # test_2 = [Seq(oligo, IUPAC.unambiguous_dna) for oligo in test]
+
+    # read rRNA seq
+    species = 'Mmusculus'
+    dir_rRNA = './rRNA'
+
+    rRNA_subunit = ('28S', '18S', '16S', '12S')
+    dict_rRNA = dict()
+
+    for subunit in rRNA_subunit:
+        for seq_record in SeqIO.parse(dir_rRNA + "/" + species +
+                                      "_rRNA_" + subunit + ".fasta", "fasta"):
+            dict_rRNA[subunit] = seq_record.seq
+
+    dict_rRNA_revcom = dict()
+    for key in dict_rRNA.keys():
+        dict_rRNA_revcom[key] = dict_rRNA[key].reverse_complement()
