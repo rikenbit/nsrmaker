@@ -21,5 +21,13 @@ def convert_repr_int(input_int, target_repr, digit):
 
     return output
 
+
+def replaces_str(input_str, dict):
+    output = input_str
+    for key in dict.keys():
+        output = output.replace(key, dict[key])
+    return output
+
+
 if __name__ == '__main__':
-    print convert_repr_int(101, 4, 7)
+
