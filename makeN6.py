@@ -29,9 +29,13 @@ def replaces_str(input_str, dict):
     return output
 
 
+def make_random_oligo(N):
+    oligo_quad = [convert_repr_int(i, 4, 6) for i in range(4 ** N)]
+    dict_gatc = {'0': 'G', '1': 'A', '2': 'T', '3': 'C'}
+    oligo_gatc = [replaces_str(s, dict_gatc) for s in oligo_quad]
+    return oligo_gatc
+
+
 if __name__ == '__main__':
 
-    # make N6 random primer
-    N6_quad = [convert_repr_int(i, 4, 6) for i in range(4 ** 6)]
-    dict_gatc = {'0': 'G', '1': 'A', '2': 'T', '3': 'C'}
-    N6_gatc = [replaces_str(s, dict_gatc) for s in N6_quad]
+    test = make_random_oligo(6)
