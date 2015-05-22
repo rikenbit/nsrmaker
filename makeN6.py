@@ -68,16 +68,46 @@ def find_seq_in_rRNA(rRNA_seq_revcom, possible_oligo):
                       in range(len(possible_oligo))])
         df[key] = s
 
-    return len([i for i in range(len(N6_orig)) if all(df.ix[i] == -1)])
+    return ([i for i in range(len(N6_orig)) if all(df.ix[i] == -1)])
+
+
+def get_public_NSR(species):
+    if species == 'Mmusculus':
+        df_mNSR = pd.read_csv('./published_NSR/mNSR_GenomRes_suppl3.csv',
+                              header=0, names=('name_published', 'seq'))
+        return [df_mNSR['seq'][i] for i in range(len(df_mNSR))]
+    elif species == 'Hsapiens':
+        df_hNSR = pd.read_csv('./published_NSR/hNSR_nmeth_suppl2.csv',
+                              header=None, names=("seq_w_tail",))
+        return [df_hNSR['seq_w_tail'][i][11:] for i in range(len(df_hNSR))]
+    else:
+        print('Option species must be either Mmusculus or Hsapiens')
+        raise OptionError()
+
 
 
 if __name__ == '__main__':
+
+    species = 'Hsapiens'
 
     # make N6 random primer
     N6_orig = make_random_oligo(6)
 
     # read rRNA seq
-    rRNA_seq_revcom = read_rRNA('Hsapiens', return_revcom=True)
+    rRNA_seq_revcom = read_rRNA(species, return_revcom=True)
 
     # matching
-    print(find_seq_in_rRNA(rRNA_seq_revcom, N6_orig))
+    index_NSR = find_seq_in_rRNA(rRNA_seq_revcom, N6_orig)
+    seq_NSR = [N6_orig[i] for i in index_NSR]
+
+    # comparison to published NSR seq
+    if species == 'Mmusculus' or species == 'Hsapiens':
+        seq_NSR_public = get_public_NSR(species)
+        df_c = pd.DataFrame({'seq': N6_orig})
+        df_c['new'] = df_c['seq'].isin(seq_NSR)
+        df_c['public'] = df_c['seq'].isin(seq_NSR_public)
+        TT = [df_c['new'].ix[i] == True and df_c['public'].ix[i] == True for i in range(len(N6_orig))]
+        TF = [df_c['new'].ix[i] == True and df_c['public'].ix[i] == False for i in range(len(N6_orig))]
+        FT = [df_c['new'].ix[i] == False and df_c['public'].ix[i] == True for i in range(len(N6_orig))]
+        FF = [df_c['new'].ix[i] == False and df_c['public'].ix[i] == False for i in range(len(N6_orig))]
+        print([pd.Series(x).sum() for x in (TT, TF, FT, FF)])
