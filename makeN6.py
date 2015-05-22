@@ -37,7 +37,7 @@ def replaces_str(input_str, dict):
 
 
 def make_random_oligo(N):
-    oligo_quad = [convert_repr_int(i, 4, 6) for i in range(4 ** N)]
+    oligo_quad = [convert_repr_int(i, 4, N) for i in range(4 ** N)]
     dict_gatc = {'0': 'G', '1': 'A', '2': 'T', '3': 'C'}
     oligo_gatc = [replaces_str(s, dict_gatc) for s in oligo_quad]
     return oligo_gatc
@@ -56,8 +56,10 @@ def read_rRNA(species, dir_rRNA='./rRNA', return_revcom=False,
     for key in dict_rRNA.keys():
         dict_rRNA_revcom[key] = dict_rRNA[key].reverse_complement()
 
-    if return_revcom is False: return dict_rRNA
-    if return_revcom is True: return dict_rRNA_revcom
+    if return_revcom is False:
+        return dict_rRNA
+    if return_revcom is True:
+        return dict_rRNA_revcom
     return None
 
 
@@ -83,7 +85,6 @@ def get_public_NSR(species):
     else:
         print('Option species must be either Mmusculus or Hsapiens')
         raise OptionError()
-
 
 
 if __name__ == '__main__':
