@@ -36,6 +36,24 @@ def make_random_oligo(N):
     return oligo_gatc
 
 
+def read_rRNA(species, dir_rRNA='./rRNA', return_revcom=False,
+              rRNA_subunit=('28S', '18S', '16S', '12S')):
+
+    dict_rRNA = dict()
+    for subunit in rRNA_subunit:
+        for seq_record in SeqIO.parse(dir_rRNA + "/" + species +
+                                      "_rRNA_" + subunit + ".fasta", "fasta"):
+            dict_rRNA[subunit] = seq_record.seq
+
+    dict_rRNA_revcom = dict()
+    for key in dict_rRNA.keys():
+        dict_rRNA_revcom[key] = dict_rRNA[key].reverse_complement()
+
+    if return_revcom is False: return dict_rRNA
+    if return_revcom is True: return dict_rRNA_revcom
+    return None
+
+
 if __name__ == '__main__':
 
     N6_orig = make_random_oligo(6)
@@ -46,17 +64,5 @@ if __name__ == '__main__':
     # test_2 = [Seq(oligo, IUPAC.unambiguous_dna) for oligo in test]
 
     # read rRNA seq
-    species = 'Mmusculus'
-    dir_rRNA = './rRNA'
-
-    rRNA_subunit = ('28S', '18S', '16S', '12S')
-    dict_rRNA = dict()
-
-    for subunit in rRNA_subunit:
-        for seq_record in SeqIO.parse(dir_rRNA + "/" + species +
-                                      "_rRNA_" + subunit + ".fasta", "fasta"):
-            dict_rRNA[subunit] = seq_record.seq
-
-    dict_rRNA_revcom = dict()
-    for key in dict_rRNA.keys():
-        dict_rRNA_revcom[key] = dict_rRNA[key].reverse_complement()
+    rRNA_seq = read_rRNA('Mmusculus')
+    rRNA_seq_revcom = read_rRNA('Mmusculus', return_revcom=True)
