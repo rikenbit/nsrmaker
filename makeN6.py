@@ -1,4 +1,8 @@
 from __future__ import print_function
+from Bio.Seq import Seq
+from Bio.Alphabet import IUPAC
+from Bio import SeqIO
+import pandas as pd
 
 
 class OptionError(ValueError):
@@ -57,25 +61,23 @@ def read_rRNA(species, dir_rRNA='./rRNA', return_revcom=False,
     return None
 
 
-if __name__ == '__main__':
-
-    N6_orig = make_random_oligo(6)
-
-    from Bio.Seq import Seq
-    from Bio.Alphabet import IUPAC
-    from Bio import SeqIO
-    # test_2 = [Seq(oligo, IUPAC.unambiguous_dna) for oligo in test]
-
-    # read rRNA seq
-    rRNA_seq = read_rRNA('Hsapiens')
-    rRNA_seq_revcom = read_rRNA('Hsapiens', return_revcom=True)
-
-    import pandas as pd
-
+def find_seq_in_rRNA(rRNA_seq_revcom, possible_oligo):
     df = pd.DataFrame()
     for key in rRNA_seq_revcom.keys():
-        s = pd.Series([rRNA_seq_revcom[key].find(N6_orig[i][0:6]) for i
-                      in range(len(N6_orig))])
+        s = pd.Series([rRNA_seq_revcom[key].find(possible_oligo[i][0:6]) for i
+                      in range(len(possible_oligo))])
         df[key] = s
 
-    print(len([i for i in range(len(N6_orig)) if all(df.ix[i] == -1)]))
+    return len([i for i in range(len(N6_orig)) if all(df.ix[i] == -1)])
+
+
+if __name__ == '__main__':
+
+    # make N6 random primer
+    N6_orig = make_random_oligo(6)
+
+    # read rRNA seq
+    rRNA_seq_revcom = read_rRNA('Hsapiens', return_revcom=True)
+
+    # matching
+    print(find_seq_in_rRNA(rRNA_seq_revcom, N6_orig))
