@@ -1,3 +1,6 @@
+from __future__ import print_function
+
+
 class OptionError(ValueError):
     pass
 
@@ -9,7 +12,7 @@ def convert_repr_int(input_int, target_repr, digit):
     '''
 
     if input_int > (target_repr ** digit - 1):
-        print 'Cannot change representation'
+        print('Cannot change representation')
         raise OptionError()
 
     output = str('')
@@ -64,5 +67,15 @@ if __name__ == '__main__':
     # test_2 = [Seq(oligo, IUPAC.unambiguous_dna) for oligo in test]
 
     # read rRNA seq
-    rRNA_seq = read_rRNA('Mmusculus')
-    rRNA_seq_revcom = read_rRNA('Mmusculus', return_revcom=True)
+    rRNA_seq = read_rRNA('Hsapiens')
+    rRNA_seq_revcom = read_rRNA('Hsapiens', return_revcom=True)
+
+    import pandas as pd
+
+    df = pd.DataFrame()
+    for key in rRNA_seq_revcom.keys():
+        s = pd.Series([rRNA_seq_revcom[key].find(N6_orig[i][0:6]) for i
+                      in range(len(N6_orig))])
+        df[key] = s
+
+    print(len([i for i in range(len(N6_orig)) if all(df.ix[i] == -1)]))
