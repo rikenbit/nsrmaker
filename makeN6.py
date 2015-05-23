@@ -1,8 +1,8 @@
 from __future__ import print_function
-from Bio.Seq import Seq
-from Bio.Alphabet import IUPAC
-from Bio import SeqIO
 import pandas as pd
+from Bio import SeqIO
+# from Bio.Seq import Seq
+# from Bio.Alphabet import IUPAC
 
 
 class OptionError(ValueError):
@@ -89,7 +89,7 @@ def get_public_NSR(species):
 
 if __name__ == '__main__':
 
-    species = 'Hsapiens'
+    species = 'Mmusculus'
 
     # make N6 random primer
     N6_orig = make_random_oligo(6)
@@ -97,9 +97,13 @@ if __name__ == '__main__':
     # read rRNA seq
     rRNA_seq_revcom = read_rRNA(species, return_revcom=True)
 
-    # matching
+    # calculate NSR
     index_NSR = find_seq_in_rRNA(rRNA_seq_revcom, N6_orig)
     seq_NSR = [N6_orig[i] for i in index_NSR]
+    name_NSR = ["NSR_" + species + "_" + str(i).zfill(4) for i in index_NSR]
+    df_NSR = pd.DataFrame({'name': name_NSR, 'seq': seq_NSR})
+    output_file = "./results/NSR_" + species + ".csv"
+    df_NSR.to_csv(output_file)
 
     # comparison to published NSR seq
     if species == 'Mmusculus' or species == 'Hsapiens':
@@ -115,6 +119,6 @@ if __name__ == '__main__':
               for i in range(len(N6_orig))]
         FF = [df_c['new'].ix[i] == False and df_c['public'].ix[i] == False
               for i in range(len(N6_orig))]
-        print("Comparison between new NSR and public NSR: "+ species)
+        print("Comparison between new NSR and public NSR: " + species)
         print("[both, only in New, only in Public, neither]")
         print([pd.Series(x).sum() for x in (TT, TF, FT, FF)])
