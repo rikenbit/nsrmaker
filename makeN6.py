@@ -4,9 +4,12 @@ from Bio import SeqIO
 # from Bio.Seq import Seq
 # from Bio.Alphabet import IUPAC
 
-
-class OptionError(ValueError):
-    pass
+# Todo ###
+# write docopt: species, help, outputfile
+# comparison among species
+# add many species, ex. fly, mamoset, worm, genome-read organisms
+# think about meta-transcriptome using NSR
+# check unbiassed distribution of designed NSR, make function
 
 
 def convert_repr_int(input_int, target_repr, digit):
@@ -85,6 +88,10 @@ def get_public_NSR(species):
     else:
         print('Option species must be either Mmusculus or Hsapiens')
         raise OptionError()
+
+
+class OptionError(ValueError):
+    pass
 
 
 if __name__ == '__main__':
