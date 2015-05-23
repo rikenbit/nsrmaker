@@ -107,8 +107,14 @@ if __name__ == '__main__':
         df_c = pd.DataFrame({'seq': N6_orig})
         df_c['new'] = df_c['seq'].isin(seq_NSR)
         df_c['public'] = df_c['seq'].isin(seq_NSR_public)
-        TT = [df_c['new'].ix[i] == True and df_c['public'].ix[i] == True for i in range(len(N6_orig))]
-        TF = [df_c['new'].ix[i] == True and df_c['public'].ix[i] == False for i in range(len(N6_orig))]
-        FT = [df_c['new'].ix[i] == False and df_c['public'].ix[i] == True for i in range(len(N6_orig))]
-        FF = [df_c['new'].ix[i] == False and df_c['public'].ix[i] == False for i in range(len(N6_orig))]
+        TT = [df_c['new'].ix[i] == True and df_c['public'].ix[i] == True
+              for i in range(len(N6_orig))]
+        TF = [df_c['new'].ix[i] == True and df_c['public'].ix[i] == False
+              for i in range(len(N6_orig))]
+        FT = [df_c['new'].ix[i] == False and df_c['public'].ix[i] == True
+              for i in range(len(N6_orig))]
+        FF = [df_c['new'].ix[i] == False and df_c['public'].ix[i] == False
+              for i in range(len(N6_orig))]
+        print("Comparison between new NSR and public NSR: "+ species)
+        print("[both, only in New, only in Public, neither]")
         print([pd.Series(x).sum() for x in (TT, TF, FT, FF)])
