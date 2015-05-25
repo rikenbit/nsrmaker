@@ -73,7 +73,8 @@ def find_seq_in_rRNA(rRNA_seq_revcom, possible_oligo):
                       in range(len(possible_oligo))])
         df[key] = s
 
-    return ([i for i in range(len(N6_orig)) if all(df.ix[i] == -1)])
+    index_list = ([i for i in range(len(N6_orig)) if all(df.ix[i] == -1)])
+    return index_list, df
 
 
 def get_public_NSR(species):
@@ -102,10 +103,13 @@ if __name__ == '__main__':
     N6_orig = make_random_oligo(6)
 
     # read rRNA seq
-    rRNA_seq_revcom = read_rRNA(species, return_revcom=True)
+    rRNA_seq_revcom = read_rRNA(species, return_revcom=True,
+                                rRNA_subunit=('45S', '5S', '12S', '16S'))
+    #                             rRNA_subunit=('28S', '18S', '5p8S', '5S','12S', '16S'))
+    #                             rRNA_subunit=('28S', '18S', '12S', '16S'))
 
     # calculate NSR
-    index_NSR = find_seq_in_rRNA(rRNA_seq_revcom, N6_orig)
+    index_NSR, res_df = find_seq_in_rRNA(rRNA_seq_revcom, N6_orig)
     seq_NSR = [N6_orig[i] for i in index_NSR]
     name_NSR = ["NSR_" + species + "_" + str(i).zfill(4) for i in index_NSR]
     df_NSR = pd.DataFrame({'name': name_NSR, 'seq': seq_NSR})
