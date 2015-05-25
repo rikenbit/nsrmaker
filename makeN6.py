@@ -97,14 +97,16 @@ class OptionError(ValueError):
 
 if __name__ == '__main__':
 
-    species = 'Mmusculus'
+    species = 'Hsapiens'
 
     # make N6 random primer
     N6_orig = make_random_oligo(6)
 
     # read rRNA seq
     rRNA_seq_revcom = read_rRNA(species, return_revcom=True,
+    #                             rRNA_subunit=('5S', '23S', '16S'))
                                 rRNA_subunit=('45S', '5S', '12S', '16S'))
+    #                             rRNA_subunit=('45S', '5Ss', '5So', '12S', '16S'))
     #                             rRNA_subunit=('28S', '18S', '5p8S', '5S','12S', '16S'))
     #                             rRNA_subunit=('28S', '18S', '12S', '16S'))
 
