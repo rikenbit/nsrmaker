@@ -124,10 +124,10 @@ if __name__ == '__main__':
     # read rRNA seq
     rRNA_seq_revcom = read_rRNA(species, return_revcom=True,
     #                             rRNA_subunit=('5S', '23S', '16S'))
-                                rRNA_subunit=('45S', '5S', '12S', '16S'))
+    #                            rRNA_subunit=('45S', '5S', '12S', '16S'))
     #                             rRNA_subunit=('45S', '5Ss', '5So', '12S', '16S'))
     #                             rRNA_subunit=('28S', '18S', '5p8S', '5S','12S', '16S'))
-    #                             rRNA_subunit=('28S', '18S', '12S', '16S'))
+                                 rRNA_subunit=('28S', '18S', '12S', '16S'))
 
     # calculate NSR
     index_NSR, res_df = find_seq_in_rRNA(rRNA_seq_revcom, N6_orig)
