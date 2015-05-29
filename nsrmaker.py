@@ -2,11 +2,15 @@
 nsrmaker.py
 
 Usage:
-    nsrmaker.py [-s] species
+    nsrmaker.py (-s <species>) (-n <length>) (-r <rRNA>...) (-o <output>)
     nsrmaker.py -h | --help
     nsrmaker.py -v | --version
 
 Options:
+    -s <species>    Species
+    -n <length>     Length of NSR
+    -r <rRNA>...    List of rRNA to be removed
+    -o <output>     File name of output
     -h --help       Show this screen
     -v --version    Show version
 """
