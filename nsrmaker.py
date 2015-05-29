@@ -1,6 +1,21 @@
+"""
+nsrmaker.py
+
+Usage:
+    nsrmaker.py [-s] species
+    nsrmaker.py -h | --help
+    nsrmaker.py -v | --version
+
+Options:
+    -h --help       Show this screen
+    -v --version    Show version
+"""
+
+    # nsrmaker.py (-s species) [-l length] [-r rRNAs] (-o output)
 from __future__ import print_function
 import pandas as pd
 from Bio import SeqIO
+from docopt import docopt
 # from Bio.Seq import Seq
 # from Bio.Alphabet import IUPAC
 
@@ -97,6 +112,10 @@ class OptionError(ValueError):
 
 if __name__ == '__main__':
 
+    NAME = "nsrmaker.py"
+    VERSION = "1.0.0"
+
+    args = docopt(__doc__, version="{0} {1}".format(NAME, VERSION))
     species = 'Hsapiens'
 
     # make N6 random primer
