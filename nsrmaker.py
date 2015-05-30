@@ -151,7 +151,7 @@ if __name__ == '__main__':
     name_NSR = ["NSR_" + species + "_" + str(i).zfill(digits_num)
                 for i in index_NSR]
     df_NSR = pd.DataFrame({'name': name_NSR, 'seq': seq_NSR})
-    df_NSR.to_csv(output_file)
+    df_NSR.to_csv(output_file, index=False)
 
     # comparison to published NSR seq
     if species == 'Mmusculus' or species == 'Hsapiens':
