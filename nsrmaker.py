@@ -27,6 +27,17 @@ from docopt import docopt
 # check unbiassed distribution of designed NSR, make function
 
 
+def get_digits_num(input_int):
+    n = 0
+    while True:
+        d, _ = divmod(input_int, 10 ** n)
+        if d == 0:
+            break
+        else:
+            n += 1
+    return n
+
+
 def convert_repr_int(input_int, target_repr, digit):
 
     '''
@@ -128,6 +139,7 @@ if __name__ == '__main__':
 
     # make N6 random primer
     random_orig = make_random_oligo(N)
+    digits_num = get_digits_num(4 ** N)
 
     # read rRNA seq
     rRNA_seq_revcom = read_rRNA(species, return_revcom=True,
@@ -136,7 +148,8 @@ if __name__ == '__main__':
     # calculate NSR
     index_NSR, res_df = find_seq_in_rRNA(rRNA_seq_revcom, random_orig)
     seq_NSR = [random_orig[i] for i in index_NSR]
-    name_NSR = ["NSR_" + species + "_" + str(i).zfill(4) for i in index_NSR]
+    name_NSR = ["NSR_" + species + "_" + str(i).zfill(digits_num)
+                for i in index_NSR]
     df_NSR = pd.DataFrame({'name': name_NSR, 'seq': seq_NSR})
     df_NSR.to_csv(output_file)
 
