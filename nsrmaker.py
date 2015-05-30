@@ -2,7 +2,7 @@
 nsrmaker.py
 
 Usage:
-    nsrmaker.py (-s <species>) (-n <length>) (-r <rRNA>...) (-o <output>)
+    nsrmaker.py (-s species) (-n <length>) (-r <rRNA>...) 
     nsrmaker.py -h | --help
     nsrmaker.py -v | --version
 
@@ -10,21 +10,17 @@ Options:
     -s <species>    Species
     -n <length>     Length of NSR
     -r <rRNA>...    List of rRNA to be removed
-    -o <output>     File name of output
     -h --help       Show this screen
     -v --version    Show version
 """
 
-    # nsrmaker.py (-s species) [-l length] [-r rRNAs] (-o output)
 from __future__ import print_function
 import pandas as pd
 from Bio import SeqIO
 from docopt import docopt
 # from Bio.Seq import Seq
-# from Bio.Alphabet import IUPAC
 
 # Todo ###
-# write docopt: species, help, outputfile
 # comparison among species
 # add many species, ex. fly, mamoset, worm, genome-read organisms
 # think about meta-transcriptome using NSR
@@ -92,7 +88,7 @@ def find_seq_in_rRNA(rRNA_seq_revcom, possible_oligo):
                       in range(len(possible_oligo))])
         df[key] = s
 
-    index_list = ([i for i in range(len(N6_orig)) if all(df.ix[i] == -1)])
+    index_list = ([i for i in range(len(random_orig)) if all(df.ix[i] == -1)])
     return index_list, df
 
 
@@ -120,41 +116,44 @@ if __name__ == '__main__':
     VERSION = "1.0.0"
 
     args = docopt(__doc__, version="{0} {1}".format(NAME, VERSION))
-    species = 'Hsapiens'
+
+    species = args['-s']
+    N = int(args['-n'])
+    rRNA_subunit = args['-r']
+    str_rRNA_subunit = str()
+    for i in range(len(rRNA_subunit)):
+        str_rRNA_subunit = str_rRNA_subunit + str(rRNA_subunit[i])
+    output_file = ("./results/NSR_" + species + "_" + str(N) +
+                   "mer_" + str_rRNA_subunit + ".csv")
 
     # make N6 random primer
-    N6_orig = make_random_oligo(6)
+    random_orig = make_random_oligo(N)
 
     # read rRNA seq
     rRNA_seq_revcom = read_rRNA(species, return_revcom=True,
-    #                             rRNA_subunit=('5S', '23S', '16S'))
-    #                            rRNA_subunit=('45S', '5S', '12S', '16S'))
-    #                             rRNA_subunit=('45S', '5Ss', '5So', '12S', '16S'))
-    #                             rRNA_subunit=('28S', '18S', '5p8S', '5S','12S', '16S'))
-                                 rRNA_subunit=('28S', '18S', '12S', '16S'))
+                                rRNA_subunit=rRNA_subunit)
 
     # calculate NSR
-    index_NSR, res_df = find_seq_in_rRNA(rRNA_seq_revcom, N6_orig)
-    seq_NSR = [N6_orig[i] for i in index_NSR]
+    index_NSR, res_df = find_seq_in_rRNA(rRNA_seq_revcom, random_orig)
+    seq_NSR = [random_orig[i] for i in index_NSR]
     name_NSR = ["NSR_" + species + "_" + str(i).zfill(4) for i in index_NSR]
     df_NSR = pd.DataFrame({'name': name_NSR, 'seq': seq_NSR})
-    output_file = "./results/NSR_" + species + ".csv"
     df_NSR.to_csv(output_file)
 
     # comparison to published NSR seq
     if species == 'Mmusculus' or species == 'Hsapiens':
         seq_NSR_public = get_public_NSR(species)
-        df_c = pd.DataFrame({'seq': N6_orig})
+        df_c = pd.DataFrame({'seq': random_orig})
         df_c['new'] = df_c['seq'].isin(seq_NSR)
         df_c['public'] = df_c['seq'].isin(seq_NSR_public)
         TT = [df_c['new'].ix[i] == True and df_c['public'].ix[i] == True
-              for i in range(len(N6_orig))]
+              for i in range(len(random_orig))]
         TF = [df_c['new'].ix[i] == True and df_c['public'].ix[i] == False
-              for i in range(len(N6_orig))]
+              for i in range(len(random_orig))]
         FT = [df_c['new'].ix[i] == False and df_c['public'].ix[i] == True
-              for i in range(len(N6_orig))]
+              for i in range(len(random_orig))]
         FF = [df_c['new'].ix[i] == False and df_c['public'].ix[i] == False
-              for i in range(len(N6_orig))]
+              for i in range(len(random_orig))]
         print("Comparison between new NSR and public NSR: " + species)
         print("[both, only in New, only in Public, neither]")
         print([pd.Series(x).sum() for x in (TT, TF, FT, FF)])
