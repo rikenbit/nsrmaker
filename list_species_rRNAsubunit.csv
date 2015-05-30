@@ -1,0 +1,12 @@
+species, n, rRNA
+Hsapiens, 28S|18S|16S|12S
+Hsapiens, 45S|16S|12S
+Hsapiens, 28S|18S|16S|12S|5S
+Hsapiens, 45S|16S|12S|5S
+Mmusculus, 28S|18S|16S|12S
+Mmusculus, 45S|16S|12S
+Mmusculus, 28S|18S|16S|12S|5S
+Mmusculus, 45S|16S|12S|5S
+Xlaevis, 45S|16S|12S|5So|5Ss
+Xlaevis, 28S|18S|16S|12S|5So|5Ss
+Ecoli, 23S|16S|5S
