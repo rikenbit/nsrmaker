@@ -90,14 +90,15 @@ if __name__ == '__main__':
     plt.savefig(outputname + '_hist_summary.png')
 
     ncols = 3
-    nrows, _ = divmod(len(list_nsr_set), ncols)
+    nrows = np.int(np.ceil(len(list_nsr_set) * 1.0 / ncols))
+    ymax_hist = len(id_transcriptome) / 2
 
-    fig, axes = plt.subplots(nrows+1, ncols,
-                             figsize=(4 * (nrows + 1), 4 * ncols))
+    fig, axes = plt.subplots(nrows, ncols,
+                             figsize=(4 * ncols, 4 * nrows))
     for k in range(len(list_nsr_set)):
         i, j = divmod(k, ncols)
         axes[i, j].hist(df_plot[colname[k]], bins=25, range=(0, 25))
-        axes[i, j].set_ylim([0, 40000])
+        axes[i, j].set_ylim([0, ymax_hist])
         axes[i, j].set_xlabel('Number of NSR hexamers (per 100 nt)')
         axes[i, j].set_ylabel('Number of transcripts')
         axes[i, j].set_title(colname[k])
