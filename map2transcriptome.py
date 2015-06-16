@@ -19,6 +19,8 @@ import pandas as pd
 from Bio import SeqIO
 from docopt import docopt
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.style.use('ggplot')
 
