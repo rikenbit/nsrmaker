@@ -51,7 +51,8 @@ if __name__ == '__main__':
     seq_transcriptome = []
     id_transcriptome = []
     for seq_record in SeqIO.parse(transcriptomefile, "fasta"):
-        seq_transcriptome.append(str(seq_record.seq).upper())
+        seq_transcriptome.append(str(
+            seq_record.seq.reverse_complement()).upper())
         id_transcriptome.append(seq_record.id)
 
     len_transcriptome = [len(seq_transcriptome[i]) for i
@@ -70,10 +71,8 @@ if __name__ == '__main__':
                 match_count += c
             match_transcriptome.append(match_count)
         match_transcriptome_100 = [i * 100 for i in match_transcriptome]
-        df_transcriptome['m'+str(len(nsr_set))] = match_transcriptome_100 / df_transcriptome['len']
-
-    #df_transcriptome['match/100nt'] = (100 * df_transcriptome['match']
-    #                                   / df_transcriptome['len'])
+        df_transcriptome['m'+str(len(nsr_set))] = (match_transcriptome_100
+                                                   / df_transcriptome['len'])
 
     df_transcriptome.to_csv(outputname + '.csv')
 
