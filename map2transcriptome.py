@@ -91,6 +91,8 @@ if __name__ == '__main__':
 
     ncols = 3
     nrows = np.int(np.ceil(len(list_nsr_set) * 1.0 / ncols))
+    if nrows == 1:
+        nrows = 2
     ymax_hist = len(id_transcriptome) / 2
 
     fig, axes = plt.subplots(nrows, ncols,
