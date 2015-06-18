@@ -2,13 +2,14 @@
 nsrmaker.py
 
 Usage:
-    nsrmaker.py (-s species) (-n length) (-r rRNA...)
+    nsrmaker.py (-s species) (-n length) (-e exclude) (-r rRNA...)
     nsrmaker.py -h | --help
     nsrmaker.py -v | --version
 
 Options:
     -s species      Species
     -n length       Length of NSR
+    -e exclude      x base matching to be removed
     -r rRNA...      List of rRNA to be removed
     -h --help       Show this screen
     -v --version    Show version
@@ -92,10 +93,10 @@ def read_rRNA(species, dir_rRNA='./rRNA', return_revcom=False,
     return None
 
 
-def find_seq_in_rRNA(rRNA_seq_revcom, possible_oligo):
+def find_seq_in_rRNA(rRNA_seq_revcom, possible_oligo, xbasematching):
     df = pd.DataFrame()
     for key in rRNA_seq_revcom.keys():
-        s = pd.Series([rRNA_seq_revcom[key].find(possible_oligo[i][0:6]) for i
+        s = pd.Series([rRNA_seq_revcom[key].find(possible_oligo[i][(N-xbasematching):N]) for i
                       in range(len(possible_oligo))])
         df[key] = s
 
@@ -131,11 +132,13 @@ if __name__ == '__main__':
     species = args['-s']
     N = int(args['-n'])
     rRNA_subunit = args['-r']
+    xbasematching = int(args['-e'])
+
     str_rRNA_subunit = str()
     for i in range(len(rRNA_subunit)):
         str_rRNA_subunit = str_rRNA_subunit + str(rRNA_subunit[i])
     output_file = ("./results/NSR_" + species + "_" + str(N) +
-                   "mer_" + str_rRNA_subunit + ".csv")
+                   "mer_" + str(xbasematching) + "basematchremove_" + str_rRNA_subunit + ".csv")
 
     # make N6 random primer
     random_orig = make_random_oligo(N)
@@ -146,7 +149,7 @@ if __name__ == '__main__':
                                 rRNA_subunit=rRNA_subunit)
 
     # calculate NSR
-    index_NSR, res_df = find_seq_in_rRNA(rRNA_seq_revcom, random_orig)
+    index_NSR, res_df = find_seq_in_rRNA(rRNA_seq_revcom, random_orig, xbasematching)
     seq_NSR = [random_orig[i] for i in index_NSR]
     name_NSR = ["NSR_" + species + "_" + str(i).zfill(digits_num)
                 for i in index_NSR]
