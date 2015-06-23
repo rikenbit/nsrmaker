@@ -19,6 +19,10 @@ from __future__ import print_function
 import pandas as pd
 from Bio import SeqIO
 from docopt import docopt
+import numpy as np
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 # from Bio.Seq import Seq
 
 # Todo ###
@@ -162,8 +166,8 @@ if __name__ == '__main__':
     str_rRNA_subunit = str()
     for i in range(len(rRNA_subunit)):
         str_rRNA_subunit = str_rRNA_subunit + str(rRNA_subunit[i])
-    output_file = ("./results/NSR_" + species + "_" + str(N) +
-                   "mer_" + str(xbasematching) + "basematchremove_" + str_rRNA_subunit + ".csv")
+    outputname = ("./results/NSR_" + species + "_" + str(N) +
+                  "mer_" + str(xbasematching) + "basematchremove_" + str_rRNA_subunit)
 
     # make N6 random primer
     random_orig = make_random_oligo(N)
@@ -183,11 +187,13 @@ if __name__ == '__main__':
     tm_NSR = [calculate_Tm(seq) for seq in seq_NSR]
 
     # plotting histogram of NSR
+    outputfile_tm = outputname + "_tm.png"
     plot_hist_tm(tm_NSR, outputfile_tm)
 
     # export csv file
     df_NSR = pd.DataFrame({'name': name_NSR, 'seq': seq_NSR, 'tm': tm_NSR})
-    df_NSR.to_csv(output_file, index=False)
+    outputfile_nsr = outputname + ".csv"
+    df_NSR.to_csv(outputfile_nsr, index=False)
 
 
     # trim nsr by tm_sd
