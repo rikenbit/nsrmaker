@@ -118,6 +118,31 @@ def get_public_NSR(species):
         raise OptionError()
 
 
+def calculate_Tm(seq):
+    num_GC = seq.count("G") + seq.count("C")
+    num_AT = seq.count("A") + seq.count("T")
+    output = 4 * int(num_GC) + 2 * int(num_AT)
+    return output
+
+
+def plot_hist_tm(tm_NSR, outputfile_tm):
+    mean_tm = np.mean(tm_NSR)
+    sd_tm = np.std(tm_NSR)
+    text_str = ('Mean=' + str(round(mean_tm, 2)) + '\n S.D.=' +
+                str(round(sd_tm, 2)))
+    fig, ax = plt.subplots(1, 1, figsize=(4, 4))
+    ax.hist(tm_NSR, bins=28, range=(8, 36))
+    ax.set_xlabel('Tm of NSR [Degree Celsius]')
+    ax.set_ylabel('Number of NSR')
+    ax.set_title('Histogram for Tm of NSR') 
+    ax.text(0.95, 0.95, text_str, verticalalignment='top',
+            horizontalalignment='right',
+            transform=ax.transAxes,
+            color='black', fontsize=12)
+    plt.tight_layout()
+    plt.savefig(outputfile_tm)
+
+
 class OptionError(ValueError):
     pass
 
@@ -153,8 +178,20 @@ if __name__ == '__main__':
     seq_NSR = [random_orig[i] for i in index_NSR]
     name_NSR = ["NSR_" + species + "_" + str(i).zfill(digits_num)
                 for i in index_NSR]
-    df_NSR = pd.DataFrame({'name': name_NSR, 'seq': seq_NSR})
+
+    # calculate Tm
+    tm_NSR = [calculate_Tm(seq) for seq in seq_NSR]
+
+    # plotting histogram of NSR
+    plot_hist_tm(tm_NSR, outputfile_tm)
+
+    # export csv file
+    df_NSR = pd.DataFrame({'name': name_NSR, 'seq': seq_NSR, 'tm': tm_NSR})
     df_NSR.to_csv(output_file, index=False)
+
+
+    # trim nsr by tm_sd
+    
 
     # comparison to published NSR seq
     if species == 'Mmusculus' or species == 'Hsapiens':
