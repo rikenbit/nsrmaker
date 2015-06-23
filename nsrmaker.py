@@ -2,7 +2,7 @@
 nsrmaker.py
 
 Usage:
-    nsrmaker.py (-s species) (-n length) (-e exclude) (-r rRNA...)
+    nsrmaker.py (-s species) (-n length) (-e exclude) (-r rRNA...) (-t trimsd)
     nsrmaker.py -h | --help
     nsrmaker.py -v | --version
 
@@ -11,6 +11,7 @@ Options:
     -n length       Length of NSR
     -e exclude      x base matching to be removed
     -r rRNA...      List of rRNA to be removed
+    -t trimsd       SD value to trim NSR by its Tm
     -h --help       Show this screen
     -v --version    Show version
 """
@@ -129,7 +130,8 @@ def calculate_Tm(seq):
     return output
 
 
-def plot_hist_tm(tm_NSR, outputfile_tm):
+def plot_hist_tm(df_NSR, outputfile_tm):
+    tm_NSR = df_NSR['tm'].values
     mean_tm = np.mean(tm_NSR)
     sd_tm = np.std(tm_NSR)
     text_str = ('Mean=' + str(round(mean_tm, 2)) + '\n S.D.=' +
@@ -147,6 +149,17 @@ def plot_hist_tm(tm_NSR, outputfile_tm):
     plt.savefig(outputfile_tm)
 
 
+def trim_nsr_by_tm(df_NSR, trim_sd): 
+    seq_NSR = df_NSR['seq'].values
+    tm_NSR = df_NSR['tm'].values
+    mean_tm = np.mean(tm_NSR)
+    sd_tm = np.std(tm_NSR)
+    upper_tm = mean_tm + sd_tm * trim_sd
+    lower_tm = mean_tm - sd_tm * trim_sd
+    idx= [lower_tm < tm_NSR[i] < upper_tm for i in range(len(tm_NSR))]
+    return df_NSR[idx]
+
+
 class OptionError(ValueError):
     pass
 
@@ -162,6 +175,7 @@ if __name__ == '__main__':
     N = int(args['-n'])
     rRNA_subunit = args['-r']
     xbasematching = int(args['-e'])
+    trim_sd = float(args['-t'])
 
     str_rRNA_subunit = str()
     for i in range(len(rRNA_subunit)):
@@ -186,18 +200,23 @@ if __name__ == '__main__':
     # calculate Tm
     tm_NSR = [calculate_Tm(seq) for seq in seq_NSR]
 
-    # plotting histogram of NSR
-    outputfile_tm = outputname + "_tm.png"
-    plot_hist_tm(tm_NSR, outputfile_tm)
-
     # export csv file
     df_NSR = pd.DataFrame({'name': name_NSR, 'seq': seq_NSR, 'tm': tm_NSR})
     outputfile_nsr = outputname + ".csv"
     df_NSR.to_csv(outputfile_nsr, index=False)
 
+    # plotting histogram of NSR
+    outputfile_tm = outputname + "_tm.png"
+    plot_hist_tm(df_NSR, outputfile_tm)
 
     # trim nsr by tm_sd
-    
+    df_NSR_trimed = trim_nsr_by_tm(df_NSR, trim_sd)
+    # export csv of NSR trimed
+    outputfile_nsr_trimed = outputname + "_trimSD_" + str(trim_sd) + ".csv"
+    df_NSR_trimed.to_csv(outputfile_nsr_trimed, index=False)
+    # plot histogram of NSR trimed
+    outputfile_tm_trimed = outputname + "_trimSD_" + str(trim_sd) + "_tm.png"
+    plot_hist_tm(df_NSR_trimed, outputfile_tm_trimed)
 
     # comparison to published NSR seq
     if species == 'Mmusculus' or species == 'Hsapiens':
