@@ -2,13 +2,14 @@
 map2transcriptome.py
 
 Usage:
-    map2transcriptome.py (-n nsrfile) (-t transcriptomefile) (-o outputname)
+    map2transcriptome.py (-n nsrfile) (-t transcriptomefile) (-d downsampling) (-o outputname)
     map2transcriptome.py -h | --help
     map2transcriptome.py -v | --version
 
 Options:
     -n nsrfile              File of NSR sequence
     -t transcriptomefile    File of transcriptome sequence
+    -d downsampling         Downsampling or not
     -o outputname           Name of output
     -h --help               Show this screen
     -v --version            Show version
@@ -34,6 +35,7 @@ if __name__ == '__main__':
     nsrfile = args['-n']
     transcriptomefile = args['-t']
     outputname = args['-o']
+    downsampling = args['-d']
 
     # reading NSR file
     df_nsr = pd.read_csv(nsrfile)
@@ -45,9 +47,10 @@ if __name__ == '__main__':
     num_select.reverse()
     list_nsr_set = []
     list_nsr_set.append(seq_nsr)
-    for i in num_select:
-        this_nsr = np.random.choice(seq_nsr, i)
-        list_nsr_set.append(this_nsr)
+    if downsampling == 'T':
+        for i in num_select:
+            this_nsr = np.random.choice(seq_nsr, i)
+            list_nsr_set.append(this_nsr)
 
     # reading transcriptome file
     seq_transcriptome = []
