@@ -19,14 +19,13 @@ Options:
 from __future__ import print_function
 import pandas as pd
 from Bio import SeqIO
+from Bio.Seq import Seq
 from docopt import docopt
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.style.use('ggplot')
-
-# from Bio.Seq import Seq
 
 # Todo ###
 # comparison among species
@@ -103,8 +102,8 @@ def read_rRNA(species, dir_rRNA='./rRNA', return_revcom=False,
 def find_seq_in_rRNA(rRNA_seq_revcom, possible_oligo, xbasematching):
     df = pd.DataFrame()
     for key in rRNA_seq_revcom.keys():
-        s = pd.Series([rRNA_seq_revcom[key].find(possible_oligo[i][(N-xbasematching):N]) for i
-                      in range(len(possible_oligo))])
+        s = pd.Series([rRNA_seq_revcom[key].find(possible_oligo[i][
+            (N-xbasematching):N]) for i in range(len(possible_oligo))])
         df[key] = s
 
     index_list = ([i for i in range(len(random_orig)) if all(df.ix[i] == -1)])
@@ -142,7 +141,7 @@ def plot_hist_tm(df_NSR, outputfile_tm):
     ax.hist(tm_NSR, bins=28, range=(8, 36))
     ax.set_xlabel('Tm of NSR [Degree Celsius]')
     ax.set_ylabel('Number of NSR')
-    ax.set_title('Histogram for Tm of NSR') 
+    ax.set_title('Histogram for Tm of NSR')
     ax.text(0.95, 0.95, text_str, verticalalignment='top',
             horizontalalignment='right',
             transform=ax.transAxes,
@@ -151,15 +150,26 @@ def plot_hist_tm(df_NSR, outputfile_tm):
     plt.savefig(outputfile_tm)
 
 
-def trim_nsr_by_tm(df_NSR, trim_sd): 
-    seq_NSR = df_NSR['seq'].values
+def trim_nsr_by_tm(df_NSR, trim_sd):
     tm_NSR = df_NSR['tm'].values
     mean_tm = np.mean(tm_NSR)
     sd_tm = np.std(tm_NSR)
     upper_tm = mean_tm + sd_tm * trim_sd
     lower_tm = mean_tm - sd_tm * trim_sd
-    idx= [lower_tm < tm_NSR[i] < upper_tm for i in range(len(tm_NSR))]
+    idx = [lower_tm < tm_NSR[i] < upper_tm for i in range(len(tm_NSR))]
     return df_NSR[idx]
+
+
+def df_to_revseq_df(df_NSR):
+    seq_NSR = df_NSR['seq'].values
+    tm_NSR = df_NSR['tm'].values
+    name_NSR = df_NSR['name'].values
+    seq_NSR_rev = [str(Seq(s).reverse_complement()) for s in seq_NSR]
+    name_NSR_rev = [s + "_rev" for s in name_NSR]
+    tm_NSR_rev = tm_NSR
+    df_NSR_rev = pd.DataFrame({'name': name_NSR_rev, 'seq': seq_NSR_rev,
+                               'tm': tm_NSR_rev})
+    return df_NSR_rev
 
 
 class OptionError(ValueError):
@@ -183,7 +193,8 @@ if __name__ == '__main__':
     for i in range(len(rRNA_subunit)):
         str_rRNA_subunit = str_rRNA_subunit + str(rRNA_subunit[i])
     outputname = ("./results/NSR_" + species + "_" + str(N) +
-                  "mer_" + str(xbasematching) + "basematchremove_" + str_rRNA_subunit)
+                  "mer_" + str(xbasematching) + "basematchremove_"
+                  + str_rRNA_subunit)
 
     # make N6 random primer
     random_orig = make_random_oligo(N)
@@ -194,7 +205,8 @@ if __name__ == '__main__':
                                 rRNA_subunit=rRNA_subunit)
 
     # calculate NSR
-    index_NSR, res_df = find_seq_in_rRNA(rRNA_seq_revcom, random_orig, xbasematching)
+    index_NSR, res_df = find_seq_in_rRNA(rRNA_seq_revcom, random_orig,
+                                         xbasematching)
     seq_NSR = [random_orig[i] for i in index_NSR]
     name_NSR = ["NSR_" + species + "_" + str(i).zfill(digits_num)
                 for i in index_NSR]
@@ -207,6 +219,10 @@ if __name__ == '__main__':
     outputfile_nsr = outputname + ".csv"
     df_NSR.to_csv(outputfile_nsr, index=False)
 
+    df_NSR_rev = df_to_revseq_df(df_NSR)
+    outputfile_nsr_rev = outputname + "_2nd.csv"
+    df_NSR_rev.to_csv(outputfile_nsr_rev, index=False)
+
     # plotting histogram of NSR
     outputfile_tm = outputname + "_tm.png"
     plot_hist_tm(df_NSR, outputfile_tm)
@@ -216,6 +232,12 @@ if __name__ == '__main__':
     # export csv of NSR trimed
     outputfile_nsr_trimed = outputname + "_trimSD_" + str(trim_sd) + ".csv"
     df_NSR_trimed.to_csv(outputfile_nsr_trimed, index=False)
+
+    df_NSR_trimed_rev = df_to_revseq_df(df_NSR_trimed)
+    outputfile_nsr_trimed_rev = (outputname + "_trimSD_" +
+                                 str(trim_sd) + "_2nd.csv")
+    df_NSR_trimed_rev.to_csv(outputfile_nsr_trimed_rev, index=False)
+
     # plot histogram of NSR trimed
     outputfile_tm_trimed = outputname + "_trimSD_" + str(trim_sd) + "_tm.png"
     plot_hist_tm(df_NSR_trimed, outputfile_tm_trimed)
