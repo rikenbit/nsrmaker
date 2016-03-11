@@ -22,9 +22,6 @@ import matplotlib.pyplot as plt
 # plt.style.use('ggplot')
 import seaborn as sns
 
-def count_base(base, dict_base):
-    dict_base[base] += 1
-
 
 if __name__ == '__main__':
 
@@ -48,7 +45,7 @@ if __name__ == '__main__':
     output_file = input_file.replace(".csv", "_basebias.png")
 
     base_df = (base_df.T * 100.0 / base_df.T.sum()).T
-    base_df['base'] = range(1, 7, 1)
+    base_df['base'] = range(1, len(seq[0]) + 1, 1)
     base_df_melt = pd.melt(base_df, id_vars='base',
                            value_vars=['A', 'C', 'G', 'T'],
                            var_name='nucleotide', value_name='rate')
