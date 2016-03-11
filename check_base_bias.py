@@ -16,12 +16,11 @@ from __future__ import print_function
 import pandas as pd
 from docopt import docopt
 from collections import Counter
-import seaborn as sns
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 # plt.style.use('ggplot')
-
+import seaborn as sns
 
 def count_base(base, dict_base):
     dict_base[base] += 1
