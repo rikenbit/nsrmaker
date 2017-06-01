@@ -1,8 +1,8 @@
 """
-nsrmaker.py
+compare_nsr.py
 
 Usage:
-    compare_nsr.py (--n1 nsrfile1) (--n2 nsrfile2) (-n length) (-o outprefix)
+    compare_nsr.py (--n1 nsrfile1) (--n2 nsrfile2) (-n length) (-o outprefix) [--l1 label1] [--l2 label2]
     compare_nsr.py -h | --help
     compare_nsr.py -v | --version
 
@@ -11,6 +11,8 @@ Options:
     --n2 nsrfile    NSR file 2
     -n length       Length of NSR
     -o outprefix    Prefix of output files
+    --l1 label1     Label for NSR file 1
+    --l2 label2     Label for NSR file 2
     -h --help       Show this screen
     -v --version    Show version
 """
@@ -25,6 +27,8 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 plt.style.use('ggplot')
+from matplotlib_venn import venn2
+
 
 # Todo ###
 # comparison among species
@@ -87,7 +91,11 @@ def replaces_str(input_str, dict):
         output = output.replace(key, dict[key])
     return output
 
-
+def save_venn2(n1, n2, n12, label1, label2, outputname):
+    v = venn2(subsets=(n1, n2, n12), set_labels = (label1, label2))
+    plt.title("Overlap of NSR")
+    plt.tight_layout()
+    plt.savefig(outputname + "_venn.png")
 
 
 class OptionError(ValueError):
@@ -105,6 +113,15 @@ if __name__ == '__main__':
     nsrfile2 = args['--n2']
     N = int(args['-n'])
     outputname = args['-o']
+    label1 = args['--l1']
+    label2 = args['--l2']
+
+    if label1 is None:
+        label1 = nsrfile1
+
+    if label2 is None:
+        label2 = nsrfile2
+
 
     # reading NSR file 1, 2
     seq_nsr1 = read_nsr(nsrfile1)
@@ -136,7 +153,9 @@ if __name__ == '__main__':
     ff = pd.Series(FF).sum()
     N_all = df_c.shape[0]
 
-    df_result = pd.DataFrame({'nsrfile1': nsrfile1,
+    df_result = pd.DataFrame({'label1': label1,
+                              'label2': label2,
+                              'nsrfile1': nsrfile1,
                               'nsrfile2': nsrfile2,
                               'both': tt,
                               'only_in_1': tf,
@@ -146,3 +165,6 @@ if __name__ == '__main__':
                           }, index=[0])
     outputfile = outputname + ".csv"
     df_result.to_csv(outputfile, index=False)
+
+    # Draw venn diagram
+    save_venn2(tf, ft, tt, label1, label2, outputname)
