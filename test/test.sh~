@@ -1,7 +1,0 @@
-docker run --rm fs000:5000/harukao/python4makensr:2.7.9 python nsrmaker.py \
-  -r rRNA/Hsapiens_rRNA_16S.fasta \
-  -s Hsapiens \
-  -n 6 \
-  -e 6 \
-  -t 1 \
-  -o test/test_Hsapiens_rRNA_16S
