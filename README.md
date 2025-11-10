@@ -107,3 +107,5 @@ Copyright (c) 2025 Hiroki Danno and Haruka Ozaki, Laboratory for Bioinformatics 
 ## Maintainers
 - Hiroki Danno
 - Haruka Ozaki
+- Tetsutaro Hayashi
+- Itoshi Nikaido
