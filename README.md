@@ -62,18 +62,18 @@ docker run --rm -v $PWD:/nsrmaker -v $PWD/nsrmaker_out:/nsrmaker_out \
 
 ```bash
 # Build
-docker build -t harukao/python4makensr:2.7.9 .
+docker build -t [username]/python4makensr:2.7.9 .
 
 # Test
 git clone git@github.com:rikenbit/nsrmaker.git
 cd nsrmaker
-docker run -v $PWD:/nsrmaker --rm harukao/python4makensr:2.7.9 python /nsrmaker/nsrmaker.py -h
+docker run -v $PWD:/nsrmaker --rm [username]/python4makensr:2.7.9 python /nsrmaker/nsrmaker.py -h
 ```
 
-## How to use (on eloood)
+## Example: How to use (on our environment)
 
 ```bash
-docker run --rm fs000:5000/harukao/python4makensr:2.7.9 python PATH_TO_nsrmaker2/nsrmaker2/nsrmaker.py \
+docker run --rm fs000:5000/[username]/python4makensr:2.7.9 python PATH_TO_nsrmaker2/nsrmaker2/nsrmaker.py \
   fasta \
   -f ../../bin/nsrmaker2/rRNA/Mmusculus_rRNA_12S.fasta \
   -f ../../bin/nsrmaker2/rRNA/Mmusculus_rRNA_16S.fasta \
@@ -89,6 +89,7 @@ docker run --rm fs000:5000/harukao/python4makensr:2.7.9 python PATH_TO_nsrmaker2
   -t 1 \
   -o Mmusculus_6mer_NSR
 ```
+
 ## License
 Copyright (c) 2025 Hiroki Danno and Haruka Ozaki, Laboratory for Bioinformatics Research, RIKEN Center for Biosystems Dynamics Reseach Released under the Artistic License 2.0.
 
