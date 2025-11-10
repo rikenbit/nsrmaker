@@ -5,11 +5,11 @@ A python tool to make not-so-random primers (NSRs).
 ## How to pull docker image to use `nsrmaker`
 
 ```bash
-docker pull yuifu/python4makensr:2.7.9
+docker pull [username]/python4makensr:2.7.9
 
 cd nsrmaker*
 
-docker run --rm -v $PWD:/nsrmaker yuifu/python4makensr:2.7.9 python /nsrmaker/nsrmaker.py -h
+docker run --rm -v $PWD:/nsrmaker [username]/python4makensr:2.7.9 python /nsrmaker/nsrmaker.py -h
 ```
 
 ## Help
@@ -41,7 +41,7 @@ Options:
 mkdir nsrmaker_out
 
 docker run --rm -v $PWD:/nsrmaker -v $PWD/nsrmaker_out:/nsrmaker_out \
-  yuifu/python4makensr:2.7.9 python /nsrmaker/nsrmaker.py \
+  [username]/python4makensr:2.7.9 python /nsrmaker/nsrmaker.py \
   fasta \ # FASTA mode
   -f /nsrmaker/rRNA/Mmusculus_rRNA_12S.fasta \ # You can add a FASTA file
   -f /nsrmaker/rRNA/Mmusculus_rRNA_16S.fasta \
@@ -89,6 +89,8 @@ docker run --rm fs000:5000/harukao/python4makensr:2.7.9 python PATH_TO_nsrmaker2
   -t 1 \
   -o Mmusculus_6mer_NSR
 ```
+## License
+Copyright (c) 2025 Hiroki Danno and Haruka Ozaki, Laboratory for Bioinformatics Research, RIKEN Center for Biosystems Dynamics Reseach Released under the Artistic License 2.0.
 
 ## Maintainers
 - Hiroki Danno
