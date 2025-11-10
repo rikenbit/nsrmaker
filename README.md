@@ -14,9 +14,7 @@ Key Features
 
 ```bash
 docker pull [username]/python4makensr:2.7.9
-
 cd nsrmaker*
-
 docker run --rm -v $PWD:/nsrmaker [username]/python4makensr:2.7.9 python /nsrmaker/nsrmaker.py -h
 ```
 
