@@ -96,6 +96,17 @@ docker run --rm fs000:5000/[username]/python4makensr:2.7.9 python PATH_TO_nsrmak
   -o Mmusculus_6mer_NSR
 ```
 
+## Pre-designed NSR Primer Sets
+
+The `results/` directory contains **ready-to-use NSR primer sets** for common species (Human, Mouse, E. coli, X. laevis) with various design parameters.
+
+👉 **[View detailed list of available NSR sets](results/README.md)**
+
+Quick examples:
+- Human 6-mer: `results/NSR_Hsapiens_6mer_6basematchremove_45S16S12S5S.csv`
+- Mouse 6-mer: `results/NSR_Mmusculus_6mer_45S16S12S5S.csv`
+- E. coli 6-mer: `results/NSR_Ecoli_6mer_6basematchremove_23S16S5S.csv`
+
 ## Citation
 If you use nsrmaker in your research, please cite the following paper:
 
