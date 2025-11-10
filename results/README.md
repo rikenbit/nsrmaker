@@ -224,6 +224,3 @@ Some entries include `.png` files showing Tm distribution histograms:
 | `NSR_Xlaevis_6mer_45S16S12S5So5Ss.csv` | Comprehensive 6-mer (includes both 5S variants) |
 
 **Note**: X. laevis has two 5S rRNA genes (5So and 5Ss), both are included in the comprehensive set.
-
-
-## File Formats
