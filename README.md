@@ -101,7 +101,7 @@ docker run --rm fs000:5000/[username]/python4makensr:2.7.9 python PATH_TO_nsrmak
 ## Citation
 If you use nsrmaker in your research, please cite the following paper:
 
-Hayashi T, Ozaki H, Sasagawa Y, Umeda M, Danno H, Nikaido I. Single-cell full-length total RNA sequencing uncovers dynamics of recursive splicing and enhancer RNAs. Nat Commun. 2018 Feb 12;9(1):619. doi: 10.1038/s41467-018-02866-0. PMID: (https://pubmed.ncbi.nlm.nih.gov/29434199/); PMCID: PMC5809388.
+[Hayashi T, Ozaki H, Sasagawa Y, Umeda M, Danno H, Nikaido I. Single-cell full-length total RNA sequencing uncovers dynamics of recursive splicing and enhancer RNAs. Nat Commun. 2018 Feb 12;9(1):619. doi: 10.1038/s41467-018-02866-0.](https://www.nature.com/articles/s41467-018-02866-0)
 
 ## License
 Copyright (c) 2025 Hiroki Danno and Haruka Ozaki, Laboratory for Bioinformatics Research, RIKEN Center for Biosystems Dynamics Reseach Released under the Artistic License 2.0.
